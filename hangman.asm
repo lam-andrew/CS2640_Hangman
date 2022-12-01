@@ -10,15 +10,6 @@ la $a0, %s
 syscall 
 .end_macro 
 
-# macro that exits the program 
-.macro exit
-li $v0, 4 
-la $a0, exitMsg 
-syscall 
-li $v0, 10 
-syscall 
-.end_macro
-
 .data 
 ##### Word Bank #####
 word0:	.asciiz "assembly"
@@ -36,14 +27,18 @@ word10:  .asciiz "architecture"
 welcomePrompt: .asciiz "--------------- WELCOME TO HANGMAN --------------- \n\nRULES OF THE GAME\n1. You may guess any letter of the alphabet\n2. You are allowed 6 guesses\n3. After 6 guesses, the man is hanged and its game over" 
 menu: .asciiz "Try to guess the word by typing in" 
 gameBoard: .asciiz "\n\n     |-----|\n           |\n           |\n           |\n         ====="
-gameoverMessage: .asciiz "YOU WERE HANGED!\nCorrect string was: "
+guessPrompt: .asciiz "\nPlease enter a letter for your guess: "
+gameoverMessage: .asciiz "SORRY YOU WERE HANGED!\nCorrect string was: "
 exitMsg: .asciiz "\n\nNow Exiting Program"
 
 .text 
 main: 
 	printS(welcomePrompt)
 	printS(gameBoard)
-	exit 
+	
+	j promptGuess 
+	
+	##### TASKS TO COMPLETE ##### 
 	
 	##### CHOOSE RANDOM WORD FROM WORD BANK ##### 
 	# 1. get random word from word bank 
@@ -54,9 +49,33 @@ main:
 	# 2. Check if the input is valid (if it is a letter of the alphabet) 
 	# 	2a. if valid then check if it is in the word 
 	# 	2b. if not valid then prompt the user to enter a valid input 
-	# 3. If letter is in the word show it on the screen 
+	# 3. If letter is in the word show it on the screen [haven't figured out how to do this part yet] 
 	# 4. If letter is not in the word, add a body part and decrease amount of guesses left 
+
+promptGuess: 
+	# print out a prompt that tells the user to enter a letter 
+	printS(guessPrompt)
 	
+	# read a character as the user's guess 
+	li $v0, 12 
+	syscall 
+	move $t0, $v0 
 	
-checkGuess: 
+	j validateGuess 
+ 	
+	
+# check if the user's guess is a valid letter of the alphabet 
+validateGuess: 
 	# check for each letter of the alphabet 
+	
+	
+# check if the user's guess is in the word 
+checkGuess: 
+
+# exit the program 
+exit: 
+	li $v0, 4 
+	la $a0, exitMsg 
+	syscall 
+	li $v0, 10 
+	syscall 
