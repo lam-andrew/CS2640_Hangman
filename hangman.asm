@@ -38,7 +38,8 @@ main:
 	printS(welcomePrompt)
 	printS(gameBoard)
 	
-	j promptGuess 
+	# jump to the promptGuess label
+	j promptGuess 		
 	
 	##### TASKS TO COMPLETE ##### 
 	
@@ -47,12 +48,12 @@ main:
 	# 2. store it in memory (so we can loop through it and check for letters) 
 	
 	##### ALLOW USER TO GUESS ANY LETTER OF THE ALPHABET ##### 
-	# 1. Prompt the user to enter a letter and then read the input 
-	# 2. Check if the input is valid (if it is a letter of the alphabet) 
+	# 1. Prompt the user to enter a letter and then read the input 					*DONE*
+	# 2. Check if the input is valid (if it is a letter of the alphabet) 				*DONE*
 	# 	2a. if valid then check if it is in the word 
-	# 	2b. if not valid then prompt the user to enter a valid input 
-	# 3. If letter is in the word show it on the screen [haven't figured out how to do this part yet] 
-	# 4. If letter is not in the word, add a body part and decrease amount of guesses left 
+	# 	2b. if not valid then prompt the user to enter a valid input 				*DONE*
+	# 3. If letter is in the word show it on the screen 						[haven't figured out how to do this part yet] 
+	# 4. If letter is not in the word, add a body part and decrease amount of guesses left 		[haven't figured out how to do this part yet] 
 
 promptGuess: 
 	# print out a prompt that tells the user to enter a letter 
