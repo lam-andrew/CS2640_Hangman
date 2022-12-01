@@ -24,10 +24,12 @@ word8:  .asciiz "pipeline"
 word9:	.asciiz "storage"
 word10:  .asciiz "architecture"
 
+itworked: .asciiz "\n\nIT WORKED"
 welcomePrompt: .asciiz "--------------- WELCOME TO HANGMAN --------------- \n\nRULES OF THE GAME\n1. You may guess any letter of the alphabet\n2. You are allowed 6 guesses\n3. After 6 guesses, the man is hanged and its game over" 
 menu: .asciiz "Try to guess the word by typing in" 
 gameBoard: .asciiz "\n\n     |-----|\n           |\n           |\n           |\n         ====="
 guessPrompt: .asciiz "\nPlease enter a letter for your guess: "
+invalidInput: .asciiz "\nInput was invalid please try again."
 gameoverMessage: .asciiz "SORRY YOU WERE HANGED!\nCorrect string was: "
 exitMsg: .asciiz "\n\nNow Exiting Program"
 
@@ -61,16 +63,47 @@ promptGuess:
 	syscall 
 	move $t0, $v0 
 	
+	# jump to validateGuess label
 	j validateGuess 
  	
 	
 # check if the user's guess is a valid letter of the alphabet 
 validateGuess: 
 	# check for each letter of the alphabet 
+	beq $t0, 'A', checkGuess
+	beq $t0, 'B', checkGuess
+	beq $t0, 'C', checkGuess
+	beq $t0, 'D', checkGuess
+	beq $t0, 'E', checkGuess
+	beq $t0, 'F', checkGuess
+	beq $t0, 'G', checkGuess
+	beq $t0, 'H', checkGuess
+	beq $t0, 'I', checkGuess
+	beq $t0, 'J', checkGuess
+	beq $t0, 'K', checkGuess
+	beq $t0, 'L', checkGuess
+	beq $t0, 'M', checkGuess
+	beq $t0, 'N', checkGuess
+	beq $t0, 'O', checkGuess
+	beq $t0, 'P', checkGuess
+	beq $t0, 'Q', checkGuess
+	beq $t0, 'R', checkGuess
+	beq $t0, 'S', checkGuess
+	beq $t0, 'T', checkGuess
+	beq $t0, 'U', checkGuess
+	beq $t0, 'V', checkGuess
+	beq $t0, 'W', checkGuess
+	beq $t0, 'X', checkGuess
+	beq $t0, 'Y', checkGuess
+	beq $t0, 'Z', checkGuess
 	
+	# if not a valid letter from the alphabet 
+	printS(invalidInput)	# print an invalid input message 
+	j promptGuess		# jump back to promptGuess so the user can guess again
 	
 # check if the user's guess is in the word 
 checkGuess: 
+	printS(itworked)
 
 # exit the program 
 exit: 
