@@ -99,32 +99,32 @@ promptGuess:
 # check if the user's guess is a valid letter of the alphabet 
 validateGuess: 
 	# check for each letter of the alphabet 
-	beq $t0, 'A', checkGuess
-	beq $t0, 'B', checkGuess
-	beq $t0, 'C', checkGuess
-	beq $t0, 'D', checkGuess
-	beq $t0, 'E', checkGuess
-	beq $t0, 'F', checkGuess
-	beq $t0, 'G', checkGuess
-	beq $t0, 'H', checkGuess
-	beq $t0, 'I', checkGuess
-	beq $t0, 'J', checkGuess
-	beq $t0, 'K', checkGuess
-	beq $t0, 'L', checkGuess
-	beq $t0, 'M', checkGuess
-	beq $t0, 'N', checkGuess
-	beq $t0, 'O', checkGuess
-	beq $t0, 'P', checkGuess
-	beq $t0, 'Q', checkGuess
-	beq $t0, 'R', checkGuess
-	beq $t0, 'S', checkGuess
-	beq $t0, 'T', checkGuess
-	beq $t0, 'U', checkGuess
-	beq $t0, 'V', checkGuess
-	beq $t0, 'W', checkGuess
-	beq $t0, 'X', checkGuess
-	beq $t0, 'Y', checkGuess
-	beq $t0, 'Z', checkGuess
+	beq $t0, 'a', checkGuess
+	beq $t0, 'b', checkGuess
+	beq $t0, 'c', checkGuess
+	beq $t0, 'd', checkGuess
+	beq $t0, 'e', checkGuess
+	beq $t0, 'f', checkGuess
+	beq $t0, 'g', checkGuess
+	beq $t0, 'h', checkGuess
+	beq $t0, 'i', checkGuess
+	beq $t0, 'j', checkGuess
+	beq $t0, 'k', checkGuess
+	beq $t0, 'l', checkGuess
+	beq $t0, 'm', checkGuess
+	beq $t0, 'n', checkGuess
+	beq $t0, 'o', checkGuess
+	beq $t0, 'p', checkGuess
+	beq $t0, 'q', checkGuess
+	beq $t0, 'r', checkGuess
+	beq $t0, 's', checkGuess
+	beq $t0, 't', checkGuess
+	beq $t0, 'u', checkGuess
+	beq $t0, 'v', checkGuess
+	beq $t0, 'w', checkGuess
+	beq $t0, 'x', checkGuess
+	beq $t0, 'y', checkGuess
+	beq $t0, 'z', checkGuess
 	
 	# if not a valid letter from the alphabet 
 	printS(invalidInput)	# print an invalid input message 
