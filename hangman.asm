@@ -38,7 +38,6 @@ word0:	.asciiz "tyler"
 word1:  .asciiz "programming"
 word2:	.asciiz "instruction"
 
-itworked: .asciiz "\n\nIT WORKED"
 welcomePrompt: .asciiz "--------------- WELCOME TO HANGMAN --------------- \n\nRULES OF THE GAME\n1. You may guess any letter of the alphabet\n2. You are allowed 6 guesses\n3. After 6 guesses, the man is hanged and its game over" 
 gameBoard: .asciiz "\n\n     |-----|\n           |\n           |\n           |\n         ====="
 guessPrompt: .asciiz "\n\nPlease enter a letter for your guess: "
@@ -57,14 +56,14 @@ main:
 	printS(welcomePrompt)
 	printS(gameBoard)
 	
-	# 
+	# print out the guess word label
 	printS(newLine)
 	printS(newLine)
 	aString("Word: ")
 	printWordGuess(5)
 	
-	# jump to the promptGuess label
-	j promptGuess 		
+	# jump to the promptGuess label 
+	j promptGuess 
 	
 	##### TASKS TO COMPLETE ##### 
 	
@@ -93,7 +92,6 @@ promptGuess:
 	# jump to validateGuess label
 	j validateGuess 
  	
-	
 
 	
 # check if the user's guess is a valid letter of the alphabet 
@@ -132,14 +130,20 @@ validateGuess:
 	
 # check if the user's guess is in the word 
 checkGuess: 
-	printS(itworked)
+	aString("\nValid Guess")
 	
 	# have the word letters already stored in an array  
 	# lw from the array and compare with guessed letter 
 	# continue from there 
 	
+	j promptGuess	# jump back to promptGuess so the user can guess again 
+	
 # check if the user has reached maximum amount of errors (6) 
 checkErrors: 
+
+	# check the length of our error counter 
+	# if it is more than 6 then we display a 
+	# lose game message and exit the game 
 
 
 # exit the program 
