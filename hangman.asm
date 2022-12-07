@@ -10,15 +10,27 @@ la $a0, %s
 syscall 
 .end_macro 
 
+# macro to print user input string 
+.macro aString(%strings)
+li $v0, 4 
+.data
+S: .asciiz %strings
+la $a0, S 
+.text 
+la $a0, S
+syscall 
+.end_macro 
+
 # macro that prints the number of '-' of word length [takes in an int parameter] 
 .macro printWordGuess(%x)
-li $t0, 0
+li $t0, 0		# initialize counter variable 
+aString("      ")	# formatting 
 loop: 	
-	li $v0, 4 
-	la $a0, hyphen 
+	li $v0, 4 	
+	la $a0, hyphen 	# print a hyphen
 	syscall 
 	add $t0, $t0, 1
-	blt $t0, %x, loop
+	blt $t0, %x, loop	# loop for %x parameter length 
 .end_macro 
 
 .data 
@@ -35,18 +47,22 @@ guessPrompt: .asciiz "\n\nPlease enter a letter for your guess: "
 invalidInput: .asciiz "\nInput was invalid please try again."
 gameoverMessage: .asciiz "SORRY YOU WERE HANGED!\nCorrect string was: "
 exitMsg: .asciiz "\n\nNow Exiting Program"
-hyphen: .ascii "-"
+hyphen: .asciiz "-"
 newLine: .asciiz "\n"
 
 
 
 .text 
 main: 
+	# print the welcome screen to the user 
 	printS(welcomePrompt)
 	printS(gameBoard)
 	
+	# 
 	printS(newLine)
-	printWordGuess(5)
+	printS(newLine)
+	printWordGuess(11)
+	
 	# jump to the promptGuess label
 	j promptGuess 		
 	
