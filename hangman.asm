@@ -24,7 +24,6 @@ syscall
 # macro that prints the number of '-' of word length [takes in an int parameter] 
 .macro printWordGuess(%x)
 li $t0, 0		# initialize counter variable 
-aString("      ")	# formatting 
 loop: 	
 	li $v0, 4 	
 	la $a0, hyphen 	# print a hyphen
@@ -35,16 +34,16 @@ loop:
 
 .data 
 ##### Word Bank #####
-word0:	.asciiz "assembly"
+word0:	.asciiz "tyler"
 word1:  .asciiz "programming"
 word2:	.asciiz "instruction"
 
 itworked: .asciiz "\n\nIT WORKED"
 welcomePrompt: .asciiz "--------------- WELCOME TO HANGMAN --------------- \n\nRULES OF THE GAME\n1. You may guess any letter of the alphabet\n2. You are allowed 6 guesses\n3. After 6 guesses, the man is hanged and its game over" 
-menu: .asciiz "Try to guess the word by typing in" 
 gameBoard: .asciiz "\n\n     |-----|\n           |\n           |\n           |\n         ====="
 guessPrompt: .asciiz "\n\nPlease enter a letter for your guess: "
 invalidInput: .asciiz "\nInput was invalid please try again."
+menu: .asciiz "Try to guess the word by typing in" 
 gameoverMessage: .asciiz "SORRY YOU WERE HANGED!\nCorrect string was: "
 exitMsg: .asciiz "\n\nNow Exiting Program"
 hyphen: .asciiz "-"
@@ -61,7 +60,8 @@ main:
 	# 
 	printS(newLine)
 	printS(newLine)
-	printWordGuess(11)
+	aString("Word: ")
+	printWordGuess(5)
 	
 	# jump to the promptGuess label
 	j promptGuess 		
@@ -133,6 +133,14 @@ validateGuess:
 # check if the user's guess is in the word 
 checkGuess: 
 	printS(itworked)
+	
+	# have the word letters already stored in an array  
+	# lw from the array and compare with guessed letter 
+	# continue from there 
+	
+# check if the user has reached maximum amount of errors (6) 
+checkErrors: 
+
 
 # exit the program 
 exit: 
