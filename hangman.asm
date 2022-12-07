@@ -31,11 +31,17 @@ itworked: .asciiz "\n\nIT WORKED"
 welcomePrompt: .asciiz "--------------- WELCOME TO HANGMAN --------------- \n\nRULES OF THE GAME\n1. You may guess any letter of the alphabet\n2. You are allowed 6 guesses\n3. After 6 guesses, the man is hanged and its game over" 
 menu: .asciiz "Try to guess the word by typing in" 
 gameBoard: .asciiz "\n\n     |-----|\n           |\n           |\n           |\n         ====="
+head: .asciiz      "\n\n     |-----|\n     O     |\n           |\n           |\n         ====="
+body: .asciiz	   "\n\n     |-----|\n     O     |\n     |     |\n           |\n         ====="
+leftArm: .asciiz   "\n\n     |-----|\n     O     |\n    /|     |\n           |\n         ====="
+rightArm: .asciiz  "\n\n     |-----|\n     O     |\n    /|\\    |\n           |\n         ====="
+leftLeg: .asciiz   "\n\n     |-----|\n     O     |\n    /|\\    |\n    /     |\n         ====="
+rightLeg: .asciiz  "\n\n     |-----|\n     O     |\n    /|\\    |\n    / \\    |\n         ====="
 guessPrompt: .asciiz "\n\nPlease enter a letter for your guess: "
 invalidInput: .asciiz "\nInput was invalid please try again."
 gameoverMessage: .asciiz "SORRY YOU WERE HANGED!\nCorrect string was: "
 exitMsg: .asciiz "\n\nNow Exiting Program"
-hyphen: .ascii "-"
+hyphen: .asciiz "-"
 newLine: .asciiz "\n"
 
 
@@ -44,6 +50,12 @@ newLine: .asciiz "\n"
 main: 
 	printS(welcomePrompt)
 	printS(gameBoard)
+	printS(head)
+	printS(body)
+	printS(leftArm)
+	printS(rightArm)
+	printS(leftLeg)
+	printS(rightLeg)
 	
 	printS(newLine)
 	printWordGuess(5)
