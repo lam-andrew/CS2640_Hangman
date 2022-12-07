@@ -47,11 +47,21 @@ gameoverMessage: .asciiz "SORRY YOU WERE HANGED!\nCorrect string was: "
 exitMsg: .asciiz "\n\nNow Exiting Program"
 hyphen: .asciiz "-"
 newLine: .asciiz "\n"
+errorCount: .
 
 
 
 .text 
 main: 
+	# initialize an error counter variable 
+	li $t1, 0 	# $t1 will be the register we use for error count 
+
+	##### PUSH WORD ONTO STACK #####	
+	# push integer $t1 onto the stack
+	sub $sp, $sp, 4		# moves $sp downward to make space for our next integer (size word - 4 bytes) on the stack 
+	sw $t2, ($sp)		# push $t0 onto the stack (store value in $t2 into $sp) 
+
+game: 
 	# print the welcome screen to the user 
 	printS(welcomePrompt)
 	printS(gameBoard)
@@ -132,22 +142,23 @@ validateGuess:
 checkGuess: 
 	aString("\nValid Guess")
 	
-	# have the word letters already stored in an array  
+	# have the word letters already stored in an stack  
 	# lw from the array and compare with guessed letter 
-	# continue from there 
+	# if the letter guessed is in the word update the gameMenu 
+	# if the letter guessed is not in the word, increase errorCount register, $t1, by 1 
 	
 	j promptGuess	# jump back to promptGuess so the user can guess again 
 	
 # check if the user has reached maximum amount of errors (6) 
 checkErrors: 
-
+	# $t1 is used to count our errors 
+	
 	# check the length of our error counter 
-	# if it is more than 6 then we display a 
-	# lose game message and exit the game 
+	bgt $t1, 6, exitProgram 
 
 
 # exit the program 
-exit: 
+exitProgram: 
 	li $v0, 4 
 	la $a0, exitMsg 
 	syscall 
