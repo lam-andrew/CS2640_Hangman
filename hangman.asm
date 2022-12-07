@@ -10,19 +10,22 @@ la $a0, %s
 syscall 
 .end_macro 
 
+# macro that prints the number of '-' of word length [takes in an int parameter] 
+.macro printWordGuess(%x)
+li $t0, 0
+loop: 	
+	li $v0, 4 
+	la $a0, hyphen 
+	syscall 
+	add $t0, $t0, 1
+	blt $t0, %x, loop
+.end_macro 
+
 .data 
 ##### Word Bank #####
 word0:	.asciiz "assembly"
 word1:  .asciiz "programming"
-word2:	.asciiz "address"
-word3:  .asciiz "register"
-word4:	.asciiz "memory"
-word5:	.asciiz "intructions"
-word6:  .asciiz "microprocessor"
-word7:	.asciiz "interlocked"
-word8:  .asciiz "pipeline"
-word9:	.asciiz "storage"
-word10:  .asciiz "architecture"
+word2:	.asciiz "instruction"
 
 itworked: .asciiz "\n\nIT WORKED"
 welcomePrompt: .asciiz "--------------- WELCOME TO HANGMAN --------------- \n\nRULES OF THE GAME\n1. You may guess any letter of the alphabet\n2. You are allowed 6 guesses\n3. After 6 guesses, the man is hanged and its game over" 
@@ -32,12 +35,18 @@ guessPrompt: .asciiz "\n\nPlease enter a letter for your guess: "
 invalidInput: .asciiz "\nInput was invalid please try again."
 gameoverMessage: .asciiz "SORRY YOU WERE HANGED!\nCorrect string was: "
 exitMsg: .asciiz "\n\nNow Exiting Program"
+hyphen: .ascii "-"
+newLine: .asciiz "\n"
+
+
 
 .text 
 main: 
 	printS(welcomePrompt)
 	printS(gameBoard)
 	
+	printS(newLine)
+	printWordGuess(5)
 	# jump to the promptGuess label
 	j promptGuess 		
 	
@@ -55,6 +64,7 @@ main:
 	# 3. If letter is in the word show it on the screen 						[haven't figured out how to do this part yet] 
 	# 4. If letter is not in the word, add a body part and decrease amount of guesses left 		[haven't figured out how to do this part yet] 
 
+
 promptGuess: 
 	# print out a prompt that tells the user to enter a letter 
 	printS(guessPrompt)
@@ -67,6 +77,8 @@ promptGuess:
 	# jump to validateGuess label
 	j validateGuess 
  	
+	
+
 	
 # check if the user's guess is a valid letter of the alphabet 
 validateGuess: 
