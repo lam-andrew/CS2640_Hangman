@@ -126,6 +126,26 @@ validateGuess:
 	printS(invalidInput)	# print an invalid input message 
 	j promptGuess		# jump back to promptGuess so the user can guess again
 	
+	# if the input is invalid, then add a body part
+	li $t1, 0
+	beq $t0, $t1, head
+	
+	li $t1, 1
+	beq $t0, $t1, body
+
+	li $t1, 2
+	beq $t0, $t1, leftArm
+
+	li $t1, 3
+	beq $t0, $t1, rightArm
+
+	li $t1, 4
+	beq $t0, $t1, leftLeg
+
+	li $t1, 5
+	beq $t0, $t1, rightLeg
+
+	
 # check if the user's guess is in the word 
 checkGuess: 
 	printS(itworked)
