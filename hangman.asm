@@ -157,18 +157,79 @@ checkBody:
 	addi $t2, $t2, 1	# Adds 1 to the error counter
 	j promptGuess
 	
+<<<<<<< Updated upstream
 	rightArmB:
 	printS(rightArm)
 	addi $t2, $t2, 1	# Adds 1 to the error counter
 	j promptGuess
+=======
+	j checkErrors	# jump back to promptGuess so the user can guess again
+>>>>>>> Stashed changes
 	
 	leftLegB:
 	printS(leftLeg)
 	addi $t2, $t2, 1	# Adds 1 to the error counter
 	j promptGuess
 	
+<<<<<<< Updated upstream
 	rightLegB:
 	printS(rightLeg)
+=======
+	# if the input is invalid, then add a body part
+	li $t3, 0
+	beq $t1, $t3, headB
+	
+	li $t3, 1
+	beq $t1, $t3, bodyB
+
+	li $t3, 2
+	beq $t1, $t3, leftArmB
+
+	li $t3, 3
+	beq $t1, $t3, rightArmB
+
+	li $t3, 4
+	beq $t1, $t3, leftLegB
+
+	li $t3, 5
+	beq $t1, $t3, rightLegB
+
+	# The branches the game will jump to depending on what error count the game is on. Then print the new body part.
+	headB:
+	printS(head)
+	addi $t1, $t1, 1	# Adds 1 to the error counter 
+	j promptGuess
+	
+	bodyB:
+	printS(body)
+	addi $t1, $t1, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	leftArmB:
+	printS(leftArm)
+	addi $t1, $t1, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	rightArmB:
+	printS(rightArm)
+	addi $t1, $t1, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	leftLegB:
+	printS(leftLeg)
+	addi $t1, $t1, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	rightLegB:
+	printS(rightLeg)
+	
+	# check the length of our error counter 
+	bgt $t1, 6, exitProgram 
+
+# display to the user that they have won 
+printWin: 
+
+>>>>>>> Stashed changes
 
 	j exit			# It is a full body at this point so the user lost.
 	
