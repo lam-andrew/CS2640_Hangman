@@ -44,7 +44,7 @@ head: .asciiz      "\n\n     |-----|\n     O     |\n           |\n           |\n
 body: .asciiz	   "\n\n     |-----|\n     O     |\n     |     |\n           |\n         ====="
 leftArm: .asciiz   "\n\n     |-----|\n     O     |\n    /|     |\n           |\n         ====="
 rightArm: .asciiz  "\n\n     |-----|\n     O     |\n    /|\\    |\n           |\n         ====="
-leftLeg: .asciiz   "\n\n     |-----|\n     O     |\n    /|\\    |\n    /     |\n         ====="
+leftLeg: .asciiz   "\n\n     |-----|\n     O     |\n    /|\\    |\n    /      |\n         ====="
 rightLeg: .asciiz  "\n\n     |-----|\n     O     |\n    /|\\    |\n    / \\    |\n         ====="
 guessPrompt: .asciiz "\n\nPlease enter a letter for your guess: "
 invalidInput: .asciiz "\nInput was invalid please try again."
@@ -53,8 +53,6 @@ gameoverMessage: .asciiz "SORRY YOU WERE HANGED!\nCorrect string was: "
 exitMsg: .asciiz "\n\nNow Exiting Program"
 hyphen: .asciiz "-"
 newLine: .asciiz "\n"
-errorCount: .
-
 
 
 .text 
