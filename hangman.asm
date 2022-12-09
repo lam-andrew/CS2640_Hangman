@@ -67,7 +67,7 @@ main:
 	sub $sp, $sp, 4		# moves $sp downward to make space for our next integer (size word - 4 bytes) on the stack 
 	sw $t2, ($sp)		# push $t0 onto the stack (store value in $t2 into $sp) 
 
-game: 
+gameLoop: 
 	# print the welcome screen to the user 
 	printS(welcomePrompt)
 	printS(gameBoard)
