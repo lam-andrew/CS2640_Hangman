@@ -48,14 +48,11 @@ newLine: .asciiz "\n"
 
 .text 
 main: 
+	# Initialize a counter variable for invalid inputs
+	li $t2, 0
+	
 	printS(welcomePrompt)
 	printS(gameBoard)
-	printS(head)
-	printS(body)
-	printS(leftArm)
-	printS(rightArm)
-	printS(leftLeg)
-	printS(rightLeg)
 	
 	printS(newLine)
 	printWordGuess(5)
@@ -124,11 +121,12 @@ validateGuess:
 	
 	# if not a valid letter from the alphabet 
 	printS(invalidInput)	# print an invalid input message 
-	j promptGuess		# jump back to promptGuess so the user can guess again
-	
+	# j promptGuess		# jump back to promptGuess so the user can guess again
+
+checkBody:
 	# if the input is invalid, then add a body part
 	li $t1, 0
-	beq $t0, $t1, head
+	beq $t2, $t1, head
 	
 	li $t1, 1
 	beq $t0, $t1, body
@@ -145,6 +143,36 @@ validateGuess:
 	li $t1, 5
 	beq $t0, $t1, rightLeg
 
+	# The branches the game will jump to depending on what error count the game is on. Then print the new body part.
+	headB:
+	printS(head)
+	addi $t2, $t2, 1	# Adds 1 to the error counter 
+	j promptGuess
+	
+	bodyB:
+	printS(body)
+	addi $t2, $t2, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	leftArmB:
+	printS(leftArm)
+	addi $t2, $t2, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	rightArmB:
+	printS(rightArm)
+	addi $t2, $t2, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	leftLegB:
+	printS(leftLeg)
+	addi $t2, $t2, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	rightLegB:
+	printS(rightLeg)
+
+	j exit			# It is a full body at this point so the user lost.
 	
 # check if the user's guess is in the word 
 checkGuess: 
