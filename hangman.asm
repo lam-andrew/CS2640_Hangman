@@ -85,8 +85,6 @@ promptGuess:
 	
 	# jump to validateGuess label
 	j validateGuess 
- 	
-	
 
 	
 # check if the user's guess is a valid letter of the alphabet 
@@ -121,7 +119,7 @@ validateGuess:
 	
 	# if not a valid letter from the alphabet 
 	printS(invalidInput)	# print an invalid input message 
-	# j promptGuess		# jump back to promptGuess so the user can guess again
+	j promptGuess		# jump back to promptGuess so the user can guess again
 
 checkBody:
 	# if the input is invalid, then add a body part
