@@ -75,6 +75,7 @@ printGame:
 	# print out the guess word label
 	printS(newLine)
 	printS(newLine)
+
 	aString("Word: ")
 	printWordGuess(5)
 	
@@ -153,7 +154,8 @@ checkGuess:
 	# if the letter guessed is in the word update the gameMenu 
 	# if the letter guessed is not in the word, increase errorCount register, $t1, by 1 
 	
-	j checkErrors	# jump back to promptGuess so the user can guess again
+  j checkErrors	# jump back to promptGuess so the user can guess again
+
 	
 # check if the user has reached maximum amount of errors (6) 
 checkErrors: 
