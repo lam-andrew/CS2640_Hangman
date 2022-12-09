@@ -10,26 +10,35 @@ la $a0, %s
 syscall 
 .end_macro 
 
+# macro to print user input string 
+.macro aString(%strings)
+li $v0, 4 
+.data
+S: .asciiz %strings
+la $a0, S 
+.text 
+la $a0, S
+syscall 
+.end_macro 
+
 # macro that prints the number of '-' of word length [takes in an int parameter] 
 .macro printWordGuess(%x)
-li $t0, 0
+li $t0, 0		# initialize counter variable 
 loop: 	
-	li $v0, 4 
-	la $a0, hyphen 
+	li $v0, 4 	
+	la $a0, hyphen 	# print a hyphen
 	syscall 
 	add $t0, $t0, 1
-	blt $t0, %x, loop
+	blt $t0, %x, loop	# loop for %x parameter length 
 .end_macro 
 
 .data 
 ##### Word Bank #####
-word0:	.asciiz "assembly"
+word0:	.asciiz "tyler"
 word1:  .asciiz "programming"
 word2:	.asciiz "instruction"
 
-itworked: .asciiz "\n\nIT WORKED"
 welcomePrompt: .asciiz "--------------- WELCOME TO HANGMAN --------------- \n\nRULES OF THE GAME\n1. You may guess any letter of the alphabet\n2. You are allowed 6 guesses\n3. After 6 guesses, the man is hanged and its game over" 
-menu: .asciiz "Try to guess the word by typing in" 
 gameBoard: .asciiz "\n\n     |-----|\n           |\n           |\n           |\n         ====="
 head: .asciiz      "\n\n     |-----|\n     O     |\n           |\n           |\n         ====="
 body: .asciiz	   "\n\n     |-----|\n     O     |\n     |     |\n           |\n         ====="
@@ -39,25 +48,38 @@ leftLeg: .asciiz   "\n\n     |-----|\n     O     |\n    /|\\    |\n    /     |\n
 rightLeg: .asciiz  "\n\n     |-----|\n     O     |\n    /|\\    |\n    / \\    |\n         ====="
 guessPrompt: .asciiz "\n\nPlease enter a letter for your guess: "
 invalidInput: .asciiz "\nInput was invalid please try again."
+menu: .asciiz "Try to guess the word by typing in" 
 gameoverMessage: .asciiz "SORRY YOU WERE HANGED!\nCorrect string was: "
 exitMsg: .asciiz "\n\nNow Exiting Program"
 hyphen: .asciiz "-"
 newLine: .asciiz "\n"
+errorCount: .
 
 
 
 .text 
 main: 
-	# Initialize a counter variable for invalid inputs
-	li $t2, 0
-	
+	# initialize an error counter variable 
+	li $t1, 0 	# $t1 will be the register we use for error count 
+
+	##### PUSH WORD ONTO STACK #####	
+	# push integer $t1 onto the stack
+	sub $sp, $sp, 4		# moves $sp downward to make space for our next integer (size word - 4 bytes) on the stack 
+	sw $t2, ($sp)		# push $t0 onto the stack (store value in $t2 into $sp) 
+
+printGame: 
+	# print the welcome screen to the user 
 	printS(welcomePrompt)
 	printS(gameBoard)
 	
+	# print out the guess word label
 	printS(newLine)
+	printS(newLine)
+	aString("Word: ")
 	printWordGuess(5)
-	# jump to the promptGuess label
-	j promptGuess 		
+	
+	# jump to the promptGuess label 
+	j promptGuess 
 	
 	##### TASKS TO COMPLETE ##### 
 	
@@ -85,96 +107,58 @@ promptGuess:
 	
 	# jump to validateGuess label
 	j validateGuess 
+ 	
 
 	
 # check if the user's guess is a valid letter of the alphabet 
 validateGuess: 
 	# check for each letter of the alphabet 
-	beq $t0, 'A', checkGuess
-	beq $t0, 'B', checkGuess
-	beq $t0, 'C', checkGuess
-	beq $t0, 'D', checkGuess
-	beq $t0, 'E', checkGuess
-	beq $t0, 'F', checkGuess
-	beq $t0, 'G', checkGuess
-	beq $t0, 'H', checkGuess
-	beq $t0, 'I', checkGuess
-	beq $t0, 'J', checkGuess
-	beq $t0, 'K', checkGuess
-	beq $t0, 'L', checkGuess
-	beq $t0, 'M', checkGuess
-	beq $t0, 'N', checkGuess
-	beq $t0, 'O', checkGuess
-	beq $t0, 'P', checkGuess
-	beq $t0, 'Q', checkGuess
-	beq $t0, 'R', checkGuess
-	beq $t0, 'S', checkGuess
-	beq $t0, 'T', checkGuess
-	beq $t0, 'U', checkGuess
-	beq $t0, 'V', checkGuess
-	beq $t0, 'W', checkGuess
-	beq $t0, 'X', checkGuess
-	beq $t0, 'Y', checkGuess
-	beq $t0, 'Z', checkGuess
+	beq $t0, 'a', checkGuess
+	beq $t0, 'b', checkGuess
+	beq $t0, 'c', checkGuess
+	beq $t0, 'd', checkGuess
+	beq $t0, 'e', checkGuess
+	beq $t0, 'f', checkGuess
+	beq $t0, 'g', checkGuess
+	beq $t0, 'h', checkGuess
+	beq $t0, 'i', checkGuess
+	beq $t0, 'j', checkGuess
+	beq $t0, 'k', checkGuess
+	beq $t0, 'l', checkGuess
+	beq $t0, 'm', checkGuess
+	beq $t0, 'n', checkGuess
+	beq $t0, 'o', checkGuess
+	beq $t0, 'p', checkGuess
+	beq $t0, 'q', checkGuess
+	beq $t0, 'r', checkGuess
+	beq $t0, 's', checkGuess
+	beq $t0, 't', checkGuess
+	beq $t0, 'u', checkGuess
+	beq $t0, 'v', checkGuess
+	beq $t0, 'w', checkGuess
+	beq $t0, 'x', checkGuess
+	beq $t0, 'y', checkGuess
+	beq $t0, 'z', checkGuess
 	
 	# if not a valid letter from the alphabet 
 	printS(invalidInput)	# print an invalid input message 
 	j promptGuess		# jump back to promptGuess so the user can guess again
-
-checkBody:
-	# if the input is invalid, then add a body part
-	li $t1, 0
-	beq $t2, $t1, head
 	
-	li $t1, 1
-	beq $t0, $t1, body
-
-	li $t1, 2
-	beq $t0, $t1, leftArm
-
-	li $t1, 3
-	beq $t0, $t1, rightArm
-
-	li $t1, 4
-	beq $t0, $t1, leftLeg
-
-	li $t1, 5
-	beq $t0, $t1, rightLeg
-
-	# The branches the game will jump to depending on what error count the game is on. Then print the new body part.
-	headB:
-	printS(head)
-	addi $t2, $t2, 1	# Adds 1 to the error counter 
-	j promptGuess
+# check if the user's guess is in the word 
+checkGuess: 
+	aString("\nValid Guess")
 	
-	bodyB:
-	printS(body)
-	addi $t2, $t2, 1	# Adds 1 to the error counter
-	j promptGuess
+	# have the word letters already stored in an stack  
+	# lw from the array and compare with guessed letter 
+	# if the letter guessed is in the word update the gameMenu 
+	# if the letter guessed is not in the word, increase errorCount register, $t1, by 1 
 	
-	leftArmB:
-	printS(leftArm)
-	addi $t2, $t2, 1	# Adds 1 to the error counter
-	j promptGuess
-	
-<<<<<<< Updated upstream
-	rightArmB:
-	printS(rightArm)
-	addi $t2, $t2, 1	# Adds 1 to the error counter
-	j promptGuess
-=======
 	j checkErrors	# jump back to promptGuess so the user can guess again
->>>>>>> Stashed changes
 	
-	leftLegB:
-	printS(leftLeg)
-	addi $t2, $t2, 1	# Adds 1 to the error counter
-	j promptGuess
+# check if the user has reached maximum amount of errors (6) 
+checkErrors: 
+	# $t1 is used to count our errors 
 	
-<<<<<<< Updated upstream
-	rightLegB:
-	printS(rightLeg)
-=======
 	# if the input is invalid, then add a body part
 	li $t3, 0
 	beq $t1, $t3, headB
@@ -229,16 +213,12 @@ checkBody:
 # display to the user that they have won 
 printWin: 
 
->>>>>>> Stashed changes
 
-	j exit			# It is a full body at this point so the user lost.
-	
-# check if the user's guess is in the word 
-checkGuess: 
-	printS(itworked)
+# display to the user that they have lost 
+printLose: 
 
 # exit the program 
-exit: 
+exitProgram: 
 	li $v0, 4 
 	la $a0, exitMsg 
 	syscall 
