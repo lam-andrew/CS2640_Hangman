@@ -67,7 +67,7 @@ main:
 	sub $sp, $sp, 4		# moves $sp downward to make space for our next integer (size word - 4 bytes) on the stack 
 	sw $t2, ($sp)		# push $t0 onto the stack (store value in $t2 into $sp) 
 
-gameLoop: 
+printGame: 
 	# print the welcome screen to the user 
 	printS(welcomePrompt)
 	printS(gameBoard)
@@ -168,6 +168,12 @@ checkErrors:
 	# check the length of our error counter 
 	bgt $t1, 6, exitProgram 
 
+# display to the user that they have won 
+printWin: 
+
+
+# display to the user that they have lost 
+printLose: 
 
 # exit the program 
 exitProgram: 
