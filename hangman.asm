@@ -71,16 +71,11 @@ printGame:
 	# print the welcome screen to the user 
 	printS(welcomePrompt)
 	printS(gameBoard)
-	printS(head)
-	printS(body)
-	printS(leftArm)
-	printS(rightArm)
-	printS(leftLeg)
-	printS(rightLeg)
 	
 	# print out the guess word label
 	printS(newLine)
 	printS(newLine)
+
 	aString("Word: ")
 	printWordGuess(5)
 	
@@ -159,11 +154,60 @@ checkGuess:
 	# if the letter guessed is in the word update the gameMenu 
 	# if the letter guessed is not in the word, increase errorCount register, $t1, by 1 
 	
-	j promptGuess	# jump back to promptGuess so the user can guess again 
+  j checkErrors	# jump back to promptGuess so the user can guess again
+
 	
 # check if the user has reached maximum amount of errors (6) 
 checkErrors: 
 	# $t1 is used to count our errors 
+	
+	# if the input is invalid, then add a body part
+	li $t3, 0
+	beq $t1, $t3, headB
+	
+	li $t3, 1
+	beq $t1, $t3, bodyB
+
+	li $t3, 2
+	beq $t1, $t3, leftArmB
+
+	li $t3, 3
+	beq $t1, $t3, rightArmB
+
+	li $t3, 4
+	beq $t1, $t3, leftLegB
+
+	li $t3, 5
+	beq $t1, $t3, rightLegB
+
+	# The branches the game will jump to depending on what error count the game is on. Then print the new body part.
+	headB:
+	printS(head)
+	addi $t1, $t1, 1	# Adds 1 to the error counter 
+	j promptGuess
+	
+	bodyB:
+	printS(body)
+	addi $t1, $t1, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	leftArmB:
+	printS(leftArm)
+	addi $t1, $t1, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	rightArmB:
+	printS(rightArm)
+	addi $t1, $t1, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	leftLegB:
+	printS(leftLeg)
+	addi $t1, $t1, 1	# Adds 1 to the error counter
+	j promptGuess
+	
+	rightLegB:
+	printS(rightLeg)
 	
 	# check the length of our error counter 
 	bgt $t1, 6, exitProgram 
