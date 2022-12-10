@@ -22,7 +22,7 @@ syscall
 .end_macro 
 
 # macro that prints the number of '-' of word length [takes in an int parameter] 
-.macro printWordGuess(%x)
+.macro printBlankWord(%x)
 li $t0, 0		# initialize counter variable 
 loop: 	
 	li $v0, 4 	
@@ -49,7 +49,7 @@ rightLeg: .asciiz  "\n\n     |-----|\n     O     |\n    /|\\    |\n    / \\    |
 guessPrompt: .asciiz "\n\nPlease enter a letter for your guess: "
 invalidInput: .asciiz "\nInput was invalid please try again."
 menu: .asciiz "Try to guess the word by typing in" 
-gameoverMessage: .asciiz "SORRY YOU WERE HANGED!\nCorrect string was: "
+gameoverMessage: .asciiz "\n\nSORRY YOU WERE HANGED!\nCorrect string was: "
 exitMsg: .asciiz "\n\nNow Exiting Program"
 hyphen: .asciiz "-"
 newLine: .asciiz "\n"
@@ -58,51 +58,41 @@ newLine: .asciiz "\n"
 .text 
 main: 
 	# initialize an error counter variable 
-	li $t1, 0 	# $t1 will be the register we use for error count 
+	li $t1, 6 	# $t1 will be the register we use for error count 	
 
 	##### PUSH WORD ONTO STACK #####	
 	# push integer $t1 onto the stack
 	sub $sp, $sp, 4		# moves $sp downward to make space for our next integer (size word - 4 bytes) on the stack 
 	sw $t2, ($sp)		# push $t0 onto the stack (store value in $t2 into $sp) 
 
-printGame: 
+
+welcomeMessage: 
 	# print the welcome screen to the user 
-	printS(welcomePrompt)
+	printS(welcomePrompt) 
+
+printGame: 
 	printS(gameBoard)
 	
-	# print out the guess word label
-	printS(newLine)
-	printS(newLine)
-
+	# print out the blank word label 
+	aString("\n\n")
 	aString("Word: ")
-	printWordGuess(5)
+	printBlankWord(5)
 	
 	# jump to the promptGuess label 
 	j promptGuess 
 	
-	##### TASKS TO COMPLETE ##### 
-	
-	##### CHOOSE RANDOM WORD FROM WORD BANK ##### 
-	# 1. get random word from word bank 
-	# 2. store it in memory (so we can loop through it and check for letters) 
-	
-	##### ALLOW USER TO GUESS ANY LETTER OF THE ALPHABET ##### 
-	# 1. Prompt the user to enter a letter and then read the input 					*DONE*
-	# 2. Check if the input is valid (if it is a letter of the alphabet) 				*DONE*
-	# 	2a. if valid then check if it is in the word 
-	# 	2b. if not valid then prompt the user to enter a valid input 				*DONE*
-	# 3. If letter is in the word show it on the screen 						[haven't figured out how to do this part yet] 
-	# 4. If letter is not in the word, add a body part and decrease amount of guesses left 		[haven't figured out how to do this part yet] 
-
 
 promptGuess: 
+	jal printLives
 	# print out a prompt that tells the user to enter a letter 
-	printS(guessPrompt)
+	printS(guessPrompt) 
 	
 	# read a character as the user's guess 
 	li $v0, 12 
 	syscall 
 	move $t0, $v0 
+	
+	aString("\n")	# new line for formatting
 	
 	# jump to validateGuess label
 	j validateGuess 
@@ -143,82 +133,112 @@ validateGuess:
 	printS(invalidInput)	# print an invalid input message 
 	j promptGuess		# jump back to promptGuess so the user can guess again
 	
-# check if the user's guess is in the word 
+# check if the user's guess is in the word by looping through the guessWord and comparing each letter with the user input 
 checkGuess: 
-	aString("\nValid Guess")
-	
-	# have the word letters already stored in an stack  
-	# lw from the array and compare with guessed letter 
+	# intialize an variable to be used in checkGuess 
+	li $s0, 0
+
+# crete an innerLoop label inside of the checkGuess label so that $s0 is not re-initialized with 0 
+innerLoop: 
+ 	la $a1, word0 	# load address of $a1 with our guessWord 
+ 	addu $a1, $a1, $s0	# $a1 = &str[x].  assumes x is in $s0   [use addu, instead of add, because it will not cause exception there's an overflow] 	
+ 	lbu $a0, ($a1)	# lbu: load byte unassigned (take the contents of memory, load it, and sign extend the result to 32 (or 64) bits) [load $a1 into $a0] 
+ 	
+ 	# print out our word to test if this checkGuess label works 
+ 	li $v0, 11
+ 	syscall 
+ 	
+ 	# if the current chaacter,$a0, is equal to the user input, $t0, then add it to our blank word text (_____) 
+ 	beq $a0, $t0, updateBlankWord
+ 	
+ 	addi, $s0, $s0, 1	# increment the $s0 register variable 
+ 	blt $s0, 5, innerLoop	# if the $s0 register variable is less than our word length, keep looping 
+ 	
+ 	
 	# if the letter guessed is in the word update the gameMenu 
 	# if the letter guessed is not in the word, increase errorCount register, $t1, by 1 
 	
-  j checkErrors	# jump back to promptGuess so the user can guess again
+	j checkErrors	# jump back to promptGuess so the user can guess again
+
+
+# this label is in charge up updating the blank word text when a correct character is guessed 
+updateBlankWord: 
+	
 
 	
 # check if the user has reached maximum amount of errors (6) 
 checkErrors: 
 	# $t1 is used to count our errors 
-	
 	# if the input is invalid, then add a body part
-	li $t3, 0
+	li $t3, 6
 	beq $t1, $t3, headB
 	
-	li $t3, 1
+	li $t3, 5
 	beq $t1, $t3, bodyB
 
-	li $t3, 2
+	li $t3, 4
 	beq $t1, $t3, leftArmB
 
 	li $t3, 3
 	beq $t1, $t3, rightArmB
 
-	li $t3, 4
+	li $t3, 2
 	beq $t1, $t3, leftLegB
 
-	li $t3, 5
+	li $t3, 1
 	beq $t1, $t3, rightLegB
 
 	# The branches the game will jump to depending on what error count the game is on. Then print the new body part.
 	headB:
 	printS(head)
-	addi $t1, $t1, 1	# Adds 1 to the error counter 
+	subi $t1, $t1, 1	# subtracts 1 from the error counter 
 	j promptGuess
 	
 	bodyB:
 	printS(body)
-	addi $t1, $t1, 1	# Adds 1 to the error counter
+	subi $t1, $t1, 1	# subtracts 1 from the error counter 
 	j promptGuess
 	
 	leftArmB:
 	printS(leftArm)
-	addi $t1, $t1, 1	# Adds 1 to the error counter
+	subi $t1, $t1, 1	# subtracts 1 from the error counter 
 	j promptGuess
 	
 	rightArmB:
 	printS(rightArm)
-	addi $t1, $t1, 1	# Adds 1 to the error counter
+	subi $t1, $t1, 1	# subtracts 1 from the error counter 
 	j promptGuess
 	
 	leftLegB:
 	printS(leftLeg)
-	addi $t1, $t1, 1	# Adds 1 to the error counter
+	subi $t1, $t1, 1	# subtracts 1 from the error counter 
 	j promptGuess
 	
 	rightLegB:
 	printS(rightLeg)
+	subi $t1, $t1, 1
 	
 	# check the length of our error counter 
-	bgt $t1, 6, exitProgram 
+	blt $t1, 1, exitProgram 
 
 # display to the user that they have won 
 printWin: 
 
 
-# display to the user that they have lost 
-printLose: 
-
+# this label will print the number of guesses the user has left 
+printLives: 
+	aString("\n\nRemaining lives: ")
+	
+	li $v0, 1 
+	move $a0, $t1 
+	syscall 
+	
+	jr $ra	# jr instruction will return the program to where you jump end linked (jal) from 
+	
 # exit the program 
 exitProgram: 
+	jal printLives		# display remaining lives (0) 
+	printS(gameoverMessage)	# display the gameoverMessage 
 	li $v0, 4 
 	la $a0, exitMsg 
 	syscall 
