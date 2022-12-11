@@ -56,7 +56,6 @@ gameOver:	.asciiz "\nRound is over. Your final guess was:\n"
 correctWord:	.asciiz "\nCorrect word was:\n"
 .:		.asciiz ".\n"
 replay:		.asciiz "Do you want to play again (y/n)?\n"
-finalScore:	.asciiz "Your final score is "
 newLine:	.asciiz "\n"
 exitMsg: 	.asciiz "Thank you for playing! Now exiting program ... "
 
@@ -85,10 +84,6 @@ gameLoop:
 	#play game
 	jal	playRound			# plays a round
 	
-	#increment stuffs
-	#add	$s1, $s1, $v0			# add return value of playRound to player score [final score count] 
-	#addi	$s2, $s2, 1			[final score count] 
-	
 	#output post-round info
 	printS(correctWord) 			# print "the correct word was: " 
 	move	$a0, $s0			# load unscrambled word into right arg register
@@ -103,14 +98,6 @@ playAgain:
 	
 	beq	$v0, 121, gameLoop		# if prompted char is == 'y', return to game loop (play again)
 	bne	$v0, 110, playAgain		# if we didn't get an 'n' either, branch up to prompt again.
-	
-	# Final Score is...
-	#printS(finalScore) 			# print "final score is: "
-	
-	#print num
-	#move	$a0, $s1			# move player score in place to be printed
-	#jal	printInt
-	
 	
 
 exit:	
