@@ -70,7 +70,7 @@ main:
 	and	$s2, $s2, $1			# initialize s2 to 0 (s2 == run counter)
 	
 	
-	# While the user hasn't wanted to quit
+# Keep running the game until the user decides to quit 
 gameLoop:
 	#if run_counter == 0, skip rand word
 	jal	getRandWord			# get a new random word
@@ -92,7 +92,8 @@ gameLoop:
 	li $v0, 4 				# print the unscrambled word
 	syscall 
 	printS(newLine)				# print newLine 
-	
+
+# Prompt the player asking if they would want to play again 
 playAgain:
 	printS(replay)			# print "play again?" 
 	jal	promptChar			# prompt for a character 
@@ -171,8 +172,8 @@ getRandInt:
 
 
 #------------------------------ START storeWord ---------------------------------\
-#	permute(dest, source)
-#	premutes the source string into the destination string
+#	storeWord(dest, source)
+#	stores the source string into the destination string
 #	$a0 = destination
 #	$a1 = source
 storeWord:
@@ -298,7 +299,7 @@ playRound:
 	la	$a0, GUESSED			# get the guessed word buffer
 	move	$a1, $s0			# get the word length
 	jal	fillBlanks			# fill the word with underscores
-	la $s3, 7
+	la $s3, 7				# set the score back to 7 after round end 
 	
 roundLoop:
 	# DO WHILE score > 0 && underscores_present
@@ -359,7 +360,7 @@ roundCharFound:
 	j	roundLoop			# jump to top of loop
 roundNoPoints:	
 	printS(lost) 				# print you earned no points 
-	jal 	rightLegB			# print you earned no points
+	#jal 	rightLegB			# print you earned no points
 roundLoopEnd:
 
 	# End of round msg
@@ -393,6 +394,7 @@ drawHangMan:
 	beq $s3, 3, rightArmB
 	beq $s3, 2, leftLegB
 	beq $s3, 1, rightLegB	
+	beq $s3, 0, rightLegB
 originB: 
 	printS(gameBoard)
 	jr $ra
@@ -449,8 +451,8 @@ promptChar:
 	sw	$ra, 0($sp)			# store old return address
 	sw	$a0, 4($sp)			# store old a0
 	sw	$s0, 8($sp)			# store old s0
+	
 	## Code ##
-
 	addi $v0, $0, 12			# 4 = print string syscall
 	syscall					# v0 now contains a char
 	move	$s0, $v0			# temporarily save char
