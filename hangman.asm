@@ -44,19 +44,21 @@ buffer:	.space	32
 GUESSED:	.space	32
 
 #String Table
-welcomePrompt: 	.asciiz "--------------- WELCOME TO HANGMAN --------------- \n\nRULES OF THE GAME\n1. You may guess any letter of the alphabet\n2. You are allowed 6 guesses\n3. After 6 guesses, the man is hanged and its game over"
+welcomePrompt: 	.asciiz "--------------- WELCOME TO HANGMAN --------------- \n\nRULES OF THE GAME\n1. You may guess any letter of the alphabet\n2. You are allowed 7 guesses\n3. After 7 guesses, the man is hanged and its game over"
 correctGuess:	.asciiz "\nCorrect! "
 incorrectGuess:	.asciiz "\nIncorrect! "
 word:		.asciiz "\nThe word is \n"
-score:		.asciiz ". Score is "
+score:		.asciiz ". Remaining guesses:  "
 guess: 		.asciiz	"Guess a letter: \n"
-lost:		.asciiz "You earned 0 points that round.\n"
+lost:		.asciiz "You failed to guess the word.\n"
 gameOver:	.asciiz "\nRound is over. Your final guess was:\n"
-correctWord:	.asciiz "\nCorrect  word was:\n"
+correctWord:	.asciiz "\nCorrect word was:\n"
 .:		.asciiz ".\n"
-replay:	.asciiz "Do you want to play again (y/n)?\n"
+replay:		.asciiz "Do you want to play again (y/n)?\n"
 finalScore:	.asciiz "Your final score is "
 newLine:	.asciiz "\n"
+exitMsg: 	.asciiz "Thank you for playing! Now exiting program ... "
+
 
 .text
 #------------------------------ START main ---------------------------------\
@@ -83,8 +85,8 @@ gameLoop:
 	jal	playRound			# plays a round
 	
 	#increment stuffs
-	add	$s1, $s1, $v0			# add return value of playRound to player score
-	addi	$s2, $s2, 1
+	#add	$s1, $s1, $v0			# add return value of playRound to player score [final score count] 
+	#addi	$s2, $s2, 1			[final score count] 
 	
 	#output post-round info
 	printS(correctWord) 			# print "the correct word was: " 
@@ -102,15 +104,16 @@ playAgain:
 	bne	$v0, 110, playAgain		# if we didn't get an 'n' either, branch up to prompt again.
 	
 	# Final Score is...
-	printS(finalScore) 			# print "final score is: "
+	#printS(finalScore) 			# print "final score is: "
 	
 	#print num
-	move	$a0, $s1			# move player score in place to be printed
-	jal	printInt
+	#move	$a0, $s1			# move player score in place to be printed
+	#jal	printInt
 	
 	
 
 exit:	
+	printS(exitMsg)
 	li	$v0, 10
 	syscall
 #-------------------------------- END main ----------------------------------/
@@ -123,7 +126,7 @@ exit:
 #	
 #	$v0 = Returns the address of a random word
 getRandWord:
-	## Prologue ##
+	## Allocate ##
 	addi	$sp, $sp, -8			# allocate 12 bytes on stack
 	sw	$a0, 0($sp)			# store a0
 	sw	$a1, 4($sp)			# store a1
@@ -136,7 +139,7 @@ getRandWord:
 	mul	$a0, $a0, 4			# since words are 4 bytes the rand number needs to be X4
 	lw	$v0, words($a0)			# get word address stored in t0
 	
-	## Epilogue ##
+	## Deallocate ##
 	lw	$a1, 4($sp)			#reload old a1
 	lw	$a0, 0($sp)			#reload old a0
 	addi	$sp, $sp, 8			#deallocate
@@ -150,7 +153,7 @@ getRandWord:
 #	
 #	$v0 = the random int within range
 getRandInt:
-	## Prologue ##
+	## Allocate ##
 	addi	$sp, $sp, -8			# allocate 12 bytes on stack
 	sw	$a0, 0($sp)			# store a0
 	sw	$a1, 4($sp)			# store a1
@@ -163,7 +166,7 @@ getRandInt:
 	
 	move	$v0, $a0
 	
-	## Epilogue ##
+	## Deallocate ##
 	lw	$a1, 4($sp)
 	lw	$a0, 0($sp)
 	addi	$sp, $sp, 8			#deallocate
@@ -177,7 +180,7 @@ getRandInt:
 #	$a0 = destination
 #	$a1 = source
 storeWord:
-	## Prologue ##
+	## Allocate ##
 	addi	$sp, $sp, -28			#allocate 28 bytes of space
 	sw	$ra, 0($sp)			#save return address
 	sw	$a0, 4($sp)			#save old a0
@@ -197,7 +200,7 @@ storeWord:
 	move	$s2, $v0			# s2 = string length
 	addi	$s7, $s2, -1			# set [i]terator (s7) = len-1
 
-	## Epilogue ##
+	## Deallocate ##
 	lw	$ra, 0($sp)			#load return address
 	lw	$a0, 4($sp)			#load old a0
 	lw	$a1, 8($sp)			#load old a1
@@ -217,7 +220,7 @@ storeWord:
 #	
 #	$v0 = Returns num chars copied
 strlen:
-	## Prologue ##
+	## Allocate ##
 	addi	$sp, $sp, -4			#allocate 4 bytes
 	sw	$a0, 0($sp)			# store current a0
 	
@@ -233,7 +236,7 @@ lengthLoop:
 	j	lengthLoop			# jump to top of loop
 
 lengthLoopEnd:	
-	## Epilogue ##
+	## Deallocate ##
 	lw	$a0, 0($sp)			#load old a0
 	addi	$sp, $sp, 4			#deallocate
 	jr	$ra				#return
@@ -248,7 +251,7 @@ lengthLoopEnd:
 #	
 #	$v0 = Returns num chars copied
 strcpy:
-	## Prologue ##
+	## Allocate ##
 	addi	$sp, $sp, -8			# allocate 8 bytes
 	sw	$a0, 0($sp)			# store current a0
 	sw	$a1, 4($sp)			# store current a1
@@ -266,7 +269,7 @@ copyLoop:
 
 	j	copyLoop			# jump to top of loop
 copyLoopEnd:	
-	## Epilogue ##
+	## Deallocate ##
 	lw	$a0, 0($sp)			# load old a0
 	lw	$a1, 4($sp)			# load old a1
 	addi	$sp, $sp, 8			# deallocate
@@ -281,7 +284,7 @@ copyLoopEnd:
 #	
 #	$v0 = Returns round score 
 playRound:
-	## Prologue ##
+	## Allocate ##
 	addi	$sp, $sp, -24			# allocate 12 bytes
 	sw	$ra, 0($sp)			# save return address
 	sw	$a0, 4($sp)			# store current a0
@@ -302,11 +305,11 @@ playRound:
 	la $s3, 7				# set the score back to 7 after round end 
 	
 roundLoop:
-	# DO WHILE score > 0 && underscores_present
-	beq	$s0, $0, roundLoopEnd	# Sanity check
+	# Do while score > 0 && underscores_present
+	beq $s0, $0, roundLoopEnd		# Sanity check
 		
-	#	_STATUS DISPLAY_
-	printS(word) 		# print "The word is ___" 
+	# Display Status 
+	printS(word) 				# print "The word is ___" 
 	
 	printS(GUESSED)				# print the guessed word so far 
 	printS(score) 				# print score is 	
@@ -314,14 +317,14 @@ roundLoop:
 	jal	printInt
 	printS(.)				# print period 
 	
-	#output guess a letter prompt
+	# output guess a letter prompt
 	printS(guess) 				# prints "Guess a letter: "
 	
-	#prompt for char
+	# prompt for char
 	jal	promptChar			# prompt for character
 	move	$s2, $v0			# save character entered in v0
 	
-	#see if string contains char
+	# see if string contains char
 	move	$a0, $s1			# move s1 (the location of the original word) into a0
 	move	$a1, $s2			# move the char entered in a1
 	jal	strContains			# see if string contains character
@@ -329,7 +332,7 @@ roundLoop:
 	# if string does not contain the char, print NO, else print YES and update our guessed word.
 	bne	$v0, $0, roundCharFound	# if return value != 0, we have success
 	
-	### IF Char match not found
+	# if char match not found
 	subi	$s3, $s3, 1			# wrong char, subtract 1 from score
 	jal drawHangMan
 	
@@ -341,7 +344,6 @@ roundLoop:
 
 roundCharFound:
 	#char found, print YES and update GUESSED
-	
 	# update GUESSED
 	la	$a0, GUESSED			# load address of GUESSED buffer
 	move	$a1, $s1			# load address of the permuted word
@@ -354,22 +356,22 @@ roundCharFound:
 	jal	strContains			# check if GUESSED still has underscores
 	beq	$v0, $0, roundLoopEnd		# if no underscores left in guess, end round
 	
-	#print yes
-	printS(correctGuess) 			# print Yes! 
+	#print correct
+	printS(correctGuess) 			# print correct! 
 	jal drawHangMan
-	j	roundLoop			# jump to top of loop
+	j roundLoop				# jump to top of loop
+	
 roundNoPoints:	
 	printS(lost) 				# print you earned no points 
-	#jal 	rightLegB			# print you earned no points
+	
 roundLoopEnd:
-
 	# End of round msg
 	printS(gameOver) 			# display round over message 
 	printS(GUESSED) 			# display letters guessed 
 	
 	move	$v0, $s3			# move s0 (score) to v0 (return register)
 		
-	## Epilogue ##
+	## Deallocate ##
 	lw	$ra, 0($sp)			# load return address
 	lw	$a0, 4($sp)			# load old a0
 	lw	$a1, 8($sp)			# load old a1
@@ -418,7 +420,7 @@ rightLegB:
 	jr $ra
 
 fillBlanks:
-	## Prologue ##
+	## Allocate ##
 	addi	$sp, $sp, -8			# allocate 8 bytes
 	sw	$a0, 0($sp)			# store current a0
 	sw	$a1, 4($sp)			# store current a1
@@ -434,7 +436,7 @@ fillBlanksLoop:
 	sb	$t1, 0($a0)			# store underscore
 	j	fillBlanksLoop			# back to start of loop
 fillBlanksLoopEnd:
-	## Epilogue ##
+	## Deallocate ##
 	lw	$a0, 0($sp)			# load old a0
 	lw	$a1, 4($sp)			# load old a1
 	addi	$sp, $sp, 8			# deallocate
@@ -446,7 +448,7 @@ fillBlanksLoopEnd:
 #	promptChar()
 #	Prompts for a character
 promptChar:
-	## Prologue ##
+	## Allocate ##
 	addi	$sp, $sp, -12			# allocate 4 bytes
 	sw	$ra, 0($sp)			# store old return address
 	sw	$a0, 4($sp)			# store old a0
@@ -461,7 +463,7 @@ promptChar:
 	
 	move	$v0, $s0			# move char back into return register
 	
-	## Epilogue ##
+	## Deallocate ##
 	lw	$ra, 0($sp)			# load old return address
 	lw	$a0, 4($sp)			# load old a0
 	lw	$s0, 8($sp)			# load old s0
@@ -479,7 +481,7 @@ promptChar:
 #
 #	Returns 0 if not found, 1 if found
 strContains:
-	## Prologue ##
+	## Allocate ##
 	addi	$sp, $sp, -4			# allocate 4 bytes
 	sw	$a0, 0($sp)			# store old a0
 	
@@ -495,7 +497,7 @@ strContainsLoop:
 charFound:
 	addi	$v0, $0, 1				# if char found, set return value = 1
 strContainsLoopEnd:
-	## Epilogue ##
+	## Deallocate ##
 	lw	$a0, 0($sp)			# load old a0
 	addi	$sp, $sp, 4			# deallocate
 	jr	$ra				#return
@@ -510,7 +512,7 @@ strContainsLoopEnd:
 #	$a1 = original string
 #	$a2 = char
 updateGuessed:
-	## Prologue ##
+	## Allocate ##
 	addi	$sp, $sp, -8			# allocate 4 bytes
 	sw	$a0, 0($sp)			# store old a0
 	sw	$a1, 4($sp)			# store old a1
@@ -526,7 +528,7 @@ charNotFound:
 	addi	$a1, $a1, 1				#increment original string pos
 	j	updateGuessedLoop
 updateGuessedLoopEnd:
-	## Epilogue ##
+	## Deallocate ##
 	lw	$a1, 4($sp)			# load old a1
 	lw	$a0, 0($sp)			# load old a0
 	addi	$sp, $sp, 8			# deallocate
@@ -544,6 +546,5 @@ printInt:
 	## Code ##
 	addi $v0, $0, 1				# 1 = print int syscall
 	syscall
-	## Epilogue ##
 	jr	$ra				#return
 #------------------------------ END printInt --------------------------------/
