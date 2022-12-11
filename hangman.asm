@@ -50,6 +50,7 @@ incorrectGuess:	.asciiz "\nIncorrect! "
 word:		.asciiz "\nThe word is \n"
 score:		.asciiz ". Remaining guesses:  "
 guess: 		.asciiz	"Guess a letter: \n"
+won: 		.asciiz "You have correctly guessed the word. Congrats!" 
 lost:		.asciiz "You failed to guess the word.\n"
 gameOver:	.asciiz "\nRound is over. Your final guess was:\n"
 correctWord:	.asciiz "\nCorrect word was:\n"
@@ -354,15 +355,19 @@ roundCharFound:
 	la	$a0, GUESSED			# load GUESSED address for strcontains
 	addi	$a1, $0, 45			# set a1 (the char) to 95 (the ascii value of underscore) for strcontains
 	jal	strContains			# check if GUESSED still has underscores
-	beq	$v0, $0, roundLoopEnd		# if no underscores left in guess, end round
+	beq	$v0, $0, roundWin		# if no underscores left in guess, end round
 	
 	#print correct
 	printS(correctGuess) 			# print correct! 
 	jal drawHangMan
 	j roundLoop				# jump to top of loop
 	
+roundWin: 
+	printS(won)			# print that the user successfully guessed the word 
+	j roundLoopEnd
+
 roundNoPoints:	
-	printS(lost) 				# print you earned no points 
+	printS(lost) 				# print that the user failed to guess the word 
 	
 roundLoopEnd:
 	# End of round msg
