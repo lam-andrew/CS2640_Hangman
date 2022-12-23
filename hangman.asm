@@ -268,11 +268,11 @@ roundLoop:
 	
 	# if char match not found
 	subi $s3, $s3, 1		# wrong char, subtract 1 from score
-	jal drawHangMan			#draw the hangman
+	jal drawHangMan			# draw the hangman
 	
 	# character not found.
 	printS(incorrectGuess) 		# print the incorrect message
-	beq $s3, $0, roundNoPoints	# if score == 0, end round
+	beq $s3, $0, roundNoPoints	# if lives == 0, end round
 	
 	j roundLoop			# Guess again!
 
@@ -305,7 +305,6 @@ roundLoopEnd:
 	printS(gameOver) 		# display round over message 
 	printS(guessed) 		# display letters guessed 
 	
-	move $v0, $s3			# move s3 (score) to v0 (return register)
 		
 	#Deallocate
 	lw $ra, 0($sp)			# load return address
@@ -445,8 +444,7 @@ updateGuessedLoop:
 	lb $t0, 0($a1)				# load char in from string
 	beq $t0, $0, updateGuessedLoopEnd	#if we reach end of string, stop loop
 	bne $t0, $a2, charNotFound		#if char doesn't match, branch
-	sb $a2, 0($a0)
-					# store passed in char in desired position.
+	sb $a2, 0($a0)				# sb - store byte: store passed in char in desired position.
 charNotFound:
 	addi $a0, $a0, 1		#increment guessed buffer
 	addi $a1, $a1, 1		#increment original string pos
